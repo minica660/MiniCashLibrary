@@ -1,8 +1,9 @@
 plugins {
-//    id("java-library")
+    java
+    id("java-library")
 //    id("com.gradleup.shadow") version "9.6.1"
 //    id("xyz.jpenilla.run-paper") version "3.1.0"
-    java
+
 }
 
 //repositories {
@@ -12,7 +13,9 @@ plugins {
 
 dependencies {
 //    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    compileOnly("net.kyori:adventure-api:5.2.0")
+    api("net.kyori:adventure-api:5.2.0")
+    api("net.kyori:adventure-text-serializer-legacy:5.2.0")
+    api("net.kyori:adventure-text-minimessage:4.17.0")
 }
 
 //java {
@@ -39,3 +42,6 @@ dependencies {
 //        }
 //    }
 //}
+repositories {
+    mavenCentral()
+}
