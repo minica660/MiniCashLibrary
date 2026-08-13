@@ -8,6 +8,6 @@
 //}
 rootProject.name = "MiniCashLibrary"
 
-include("core")
+include("common")
 include("paper")
 include("velocity")

@@ -31,7 +31,7 @@ subprojects {
 // 親プロジェクトで一括ビルド・コピーを行うカスタムタスク
 tasks.register("buildAll") {
     group = "build"
-    description = "すべてのモジュールをビルドし、出力を build/libs/ にまとめます。"
+    description = "すべてのモジュールをビルドし、出力を build/libs/ に行います"
 
     dependsOn(":paper:shadowJar", ":velocity:shadowJar")
 

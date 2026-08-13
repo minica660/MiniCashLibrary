@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":common"))
 
     compileOnly("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
 }
