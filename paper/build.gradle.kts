@@ -1,5 +1,6 @@
 plugins {
-//    id("java-library")
+    java
+    id("java-library")
 //    id("com.gradleup.shadow") version "9.6.1"
 
     id("com.gradleup.shadow")
@@ -13,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":common"))
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 }
 
