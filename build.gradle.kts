@@ -1,21 +1,27 @@
 plugins {
     java
     id("java-library")
+
     id("com.gradleup.shadow") version "9.6.1" apply false
+    id("maven-publish")
+
 //    id("xyz.jpenilla.run-paper") version "3.1.0" apply false
 }
 
 allprojects {
-    group = "com.example"
+    group = "com.github.minica660"
     version = "1.0"
 
 }
 
 subprojects {
     apply(plugin = "java")
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
 
     repositories {
         mavenCentral()
+        maven("https://jitpack.io")
     }
 
     configure<JavaPluginExtension>(){
@@ -26,12 +32,21 @@ subprojects {
         options.encoding = "UTF-8"
     }
 
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                from(components["java"])
+            }
+        }
+    }
+
 }
 
-// 親プロジェクトで一括ビルド・コピーを行うカスタムタスク
+
+// 親プロジェクトで一括ビルド・コピーを行う
 tasks.register("buildAll") {
     group = "build"
-    description = "すべてのモジュールをビルドし、出力を build/libs/ に行います"
+    description = "すべてのモジュールをビルドし、出力をbuild/libs/ に行う"
 
     dependsOn(":paper:shadowJar", ":velocity:shadowJar")
 
