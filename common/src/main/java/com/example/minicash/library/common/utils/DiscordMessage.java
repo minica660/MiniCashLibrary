@@ -1,6 +1,13 @@
 package com.example.minicash.library.common.utils;
 
+import com.example.minicash.library.common.response.NormalResponse;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+
 public class DiscordMessage {
+
+    private JDA jda;
 
     private String token;
     private String url;
@@ -13,16 +20,36 @@ public class DiscordMessage {
     }
 
 
-    public static void connectDiscordBot(){
+    public NormalResponse connectDiscordBot() {
+
+        try {
+            jda = JDABuilder.createDefault(token)
+                    .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+//                    .addEventListeners(new DiscordListener(proxy,config,this,logger))
+                    .build();
+            jda.awaitReady();
+
+            return new NormalResponse(true, "Discordの起動が完了しました");
+
+        } catch (InterruptedException e) {
+            return new NormalResponse(false, e.getMessage());
+        }
+
 
     }
 
-    public static void disconnectDiscordBot(){
+    public NormalResponse disconnectDiscordBot() {
+        try {
+            jda.shutdown();
+            return new NormalResponse(true, "Discord BOTを無効化しました");
+        } catch (Exception e) {
+            return new NormalResponse(false , e.getMessage());
+        }
 
     }
 
-    public static boolean sendMessage(String message){
-
+    public boolean sendMessage(String message) {
+        return false;
     }
 
 

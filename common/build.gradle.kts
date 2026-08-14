@@ -17,6 +17,9 @@ dependencies {
     api("net.kyori:adventure-text-serializer-plain:5.2.0")
     api("net.kyori:adventure-text-serializer-legacy:5.2.0")
     api("net.kyori:adventure-text-minimessage:4.17.0")
+    // discord操作用
+    api("net.dv8tion:JDA:6.5.0")
+
 }
 
 //java {
