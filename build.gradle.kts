@@ -32,7 +32,7 @@ subprojects {
         options.encoding = "UTF-8"
     }
 
-    publishing {
+    configure<PublishingExtension> {
         publications {
             create<MavenPublication>("maven") {
                 from(components["java"])
@@ -40,27 +40,31 @@ subprojects {
         }
     }
 
+//    publishing {
+//        publications {
+//            create<MavenPublication>("maven") {
+//                from(components["java"])
+//            }
+//        }
+//    }
+
 }
 
 
 // 親プロジェクトで一括ビルド・コピーを行う
-tasks.register("buildAll") {
+tasks.register<Jar>("buildCombined") {
     group = "build"
     description = "すべてのモジュールをビルドし、出力をbuild/libs/ に行う"
 
-    dependsOn(":paper:shadowJar", ":velocity:shadowJar")
+    dependsOn(":common:build", ":paper:shadowJar", ":velocity:shadowJar")
 
-    doLast {
-        val outputDir = file("$rootDir/build/libs")
-        outputDir.mkdirs()
+    archiveFileName.set("${rootProject.name}-${project.version}.jar")
+    destinationDirectory.set(layout.buildDirectory.dir("libs"))
 
-        copy {
-            from(project(":paper").layout.buildDirectory.dir("libs"))
-            from(project(":velocity").layout.buildDirectory.dir("libs"))
-            include("*-all.jar")
-            into(outputDir)
-        }
-    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from(project(":paper").layout.buildDirectory.file("libs/paper-1.0-all.jar").map { zipTree(it) })
+    from(project(":velocity").layout.buildDirectory.file("libs/velocity-1.0-all.jar").map { zipTree(it) })
 }
 
 //repositories {
