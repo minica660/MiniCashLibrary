@@ -1,4 +1,6 @@
 plugins {
+    java
+    id("java-library")
     id("com.gradleup.shadow")
 }
 
@@ -21,6 +23,8 @@ tasks {
 
     shadowJar {
         archiveClassifier.set("all")
+        mergeServiceFiles()
+        exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
     }
 
     build {
