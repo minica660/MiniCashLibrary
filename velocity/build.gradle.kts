@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":common"))
 
     compileOnly("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
 }
 
 java {
