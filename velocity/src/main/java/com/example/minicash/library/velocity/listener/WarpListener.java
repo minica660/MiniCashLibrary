@@ -65,7 +65,16 @@ public class WarpListener {
                 pendingWarpPoints.put(player.getUniqueId(), warpPointName);
 
                 // ターゲットサーバーへの転送
-                player.createConnectionRequest(targetServer.get()).connect();
+                player.createConnectionRequest(targetServer.get()).connect().thenAccept(result -> {
+                    if (result.isSuccessful()) {
+                        sendExecuteTeleportToTarget(player, warpPointName);
+                        pendingWarpPoints.remove(player.getUniqueId());
+                    } else {
+                        pendingWarpPoints.remove(player.getUniqueId());
+                        WarpResult warpResult = WarpResult.targetOffline(targetServerName, warpPointName);
+                        sendWarpResultToPaper(player, warpResult);
+                    }
+                });
 
 
             }
@@ -110,6 +119,20 @@ public class WarpListener {
         WarpResult warpResult = WarpResult.kicked(rawKickReason, warpPointName);
         sendWarpResultToPaper(player, warpResult);
 
+    }
+
+
+    /**
+     * 転送成功後、移動先のPaperサーバーへテレポート指示を送る
+     */
+    private void sendExecuteTeleportToTarget(Player player, String warpPointName) {
+        player.getCurrentServer().ifPresent(serverConnection -> {
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF("ExecuteTeleport");
+            out.writeUTF(warpPointName);
+
+            serverConnection.sendPluginMessage(MiniCashVelocityLibrary.WARP_CHANNEL, out.toByteArray());
+        });
     }
 
     /**
