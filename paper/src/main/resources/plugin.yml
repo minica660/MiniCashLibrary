@@ -1,4 +1,4 @@
-name: Warp
+name: MiniCashLibrary
 version: '${version}'
 
 main: com.example.minicash.library.paper.MiniCashPaperLibrary
