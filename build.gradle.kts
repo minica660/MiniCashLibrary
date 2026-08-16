@@ -10,7 +10,7 @@ plugins {
 
 allprojects {
     group = "com.github.minica660"
-    version = "1.0"
+    version = "1.0.5"
 
 }
 
@@ -40,63 +40,22 @@ subprojects {
         }
     }
 
-//    publishing {
-//        publications {
-//            create<MavenPublication>("maven") {
-//                from(components["java"])
-//            }
-//        }
-//    }
 
 }
 
-
-// 親プロジェクトで一括ビルド・コピーを行う
-tasks.register<Jar>("buildCombined") {
+tasks.register<Copy>("buildAll") {
     group = "build"
-    description = "すべてのモジュールをビルドし、出力をbuild/libs/ に行う"
+    description = "Paper用とVelocity用のJarを一括ビルドし、Rootのbuild/libs/にまとめてコピーします"
 
-    dependsOn(":common:build", ":paper:shadowJar", ":velocity:shadowJar")
+    // 各サブプロジェクトの shadowJar タスクに依存させる
+    dependsOn(":paper:shadowJar", ":velocity:shadowJar")
 
-    archiveFileName.set("${rootProject.name}-${project.version}.jar")
-    destinationDirectory.set(layout.buildDirectory.dir("libs"))
+    from(project(":paper").tasks.named("shadowJar"))
+    from(project(":velocity").tasks.named("shadowJar"))
 
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    into(layout.buildDirectory.dir("libs"))
 
-    from(project(":paper").layout.buildDirectory.file("libs/paper-1.0-all.jar").map { zipTree(it) })
-    from(project(":velocity").layout.buildDirectory.file("libs/velocity-1.0-all.jar").map { zipTree(it) })
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
-//repositories {
-//    mavenCentral()
-//    maven("https://repo.papermc.io/repository/maven-public/")
-//}
-//
-//dependencies {
-//    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-//}
-//
-//java {
-//    toolchain.languageVersion = JavaLanguageVersion.of(21)
-//}
-//
-//tasks {
-//    build {
-//        dependsOn(shadowJar)
-//    }
-//
-//    runServer {
-//        // Configure the Minecraft version for our task.
-//        // This is the only required configuration besides applying the plugin.
-//        // Your plugin's jar (or shadowJar if present) will be used automatically.
-//        minecraftVersion("1.21.11")
-//        jvmArgs("-Xms2G", "-Xmx2G")
-//    }
-//
-//    processResources {
-//        val props = mapOf("version" to version)
-//        filesMatching("plugin.yml") {
-//            expand(props)
-//        }
-//    }
-//}
+
