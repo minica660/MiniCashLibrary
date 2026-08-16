@@ -1,6 +1,7 @@
 package com.example.minicash.library.paper;
 
 import com.example.minicash.library.paper.listener.WarpResponsePluginMessage;
+import com.example.minicash.library.paper.utils.WarpUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MiniCashPaperLibrary extends JavaPlugin {
@@ -17,6 +18,7 @@ public final class MiniCashPaperLibrary extends JavaPlugin {
         // Velocityからのプラグインメッセージ受信
         getServer().getMessenger().registerIncomingPluginChannel(this, WARP_CHANNEL, new WarpResponsePluginMessage() );
 
+        new WarpUtil(this);
 
     }
 
