@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 @Plugin(
         id = "minicash-library-velocity",
         name = "MiniCashVelocityLibrary",
-        version = "1.0"
+        version = "1.0.5"
 )
 public final class MiniCashVelocityLibrary {
 
