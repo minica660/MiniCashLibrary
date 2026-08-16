@@ -6,7 +6,14 @@ import com.google.common.io.ByteStreams;
 import org.bukkit.entity.Player;
 
 public class WarpUtil {
-    public static void sendWarpRequest(Player player, String targetServer, String warpPointName, MiniCashPaperLibrary plugin) {
+
+    private static MiniCashPaperLibrary miniCashPaperLibrary;
+
+    public WarpUtil(MiniCashPaperLibrary miniCashPaperLibrary) {
+        WarpUtil.miniCashPaperLibrary = miniCashPaperLibrary;
+    }
+
+    public static void sendWarpRequest(Player player, String targetServer, String warpPointName) {
 
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
@@ -14,6 +21,6 @@ public class WarpUtil {
         out.writeUTF(targetServer);
         out.writeUTF(warpPointName);
 
-        player.sendPluginMessage(plugin, MiniCashPaperLibrary.WARP_CHANNEL, out.toByteArray());
+        player.sendPluginMessage(miniCashPaperLibrary, MiniCashPaperLibrary.WARP_CHANNEL, out.toByteArray());
     }
 }

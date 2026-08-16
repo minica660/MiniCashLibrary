@@ -1,0 +1,11 @@
+name: Warp
+version: '1.0'
+
+main: com.example.minicash.library.paper.MiniCashPaperLibrary
+api-version: '1.21.11'
+load: POSTWORLD
+authors:
+  - MiniCash
+description: MiniCashが作ったライブラリ
+
+
