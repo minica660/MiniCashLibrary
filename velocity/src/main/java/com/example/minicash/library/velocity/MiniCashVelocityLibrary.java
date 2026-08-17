@@ -34,7 +34,7 @@ public final class MiniCashVelocityLibrary {
 
         proxy.getChannelRegistrar().register(WARP_CHANNEL);
 
-        proxy.getEventManager().register(this, new WarpListener(proxy));
+        proxy.getEventManager().register(this, new WarpListener(proxy,this));
 
         logger.info("MiniCashVelocityLibrary Plugin Loaded!");
     }
