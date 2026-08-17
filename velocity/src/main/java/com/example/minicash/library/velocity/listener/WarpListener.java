@@ -31,7 +31,7 @@ public class WarpListener {
 
     private final Map<UUID, String> pendingWarpPoints = new ConcurrentHashMap<>();
 
-    public WarpListener(ProxyServer proxy ,  MiniCashVelocityLibrary plugin) {
+    public WarpListener(ProxyServer proxy, MiniCashVelocityLibrary plugin) {
         this.proxy = proxy;
         this.plugin = plugin;
     }
@@ -55,7 +55,9 @@ public class WarpListener {
 
             if (event.getTarget() instanceof Player player) {
 
-
+//                player.sendMessage(
+//                        Component.text("PluginMessage:最初")
+//                );
 
                 Optional<RegisteredServer> targetServers = proxy.getServer(targetServerName);
 
@@ -69,13 +71,36 @@ public class WarpListener {
                 pendingWarpPoints.put(player.getUniqueId(), warpPointName);
 
                 RegisteredServer targetServer = targetServers.get();
+//
+//                player.sendMessage(
+//                        Component.text("ターゲットサーバー取得")
+//                );
+
+                player.createConnectionRequest(targetServer).connect().whenComplete((result, throwable) -> {
+
+                    // 失敗または例外発生時
+                    if (throwable != null || (result != null && !result.isSuccessful())) {
+
+                        if (pendingWarpPoints.remove(player.getUniqueId()) != null) {
+
+                            String reasonText = "サーバーがオフラインです";
+
+                            if (result != null) {
+                                Component reasonComponent = result.getReasonComponent().orElse(null);
+                                if (reasonComponent != null) {
+                                    String parsed = PlainTextComponentSerializer.plainText().serialize(reasonComponent);
+                                    if (!parsed.isBlank()) {
+                                        reasonText = parsed;
+                                    }
+                                }
+                            }
+
+                            player.sendMessage(getKickReasonMessage(reasonText));
 
 
+                        }
 
-                player.createConnectionRequest(targetServer).connect().thenAccept(result -> {
-                    if (!result.isSuccessful()) {
-                        pendingWarpPoints.remove(player.getUniqueId());
-                        player.sendMessage(Component.text("サーバーへの移動に失敗しました:PluginMessage").color(NamedTextColor.RED));
+
                     }
                 });
             }
@@ -86,7 +111,7 @@ public class WarpListener {
     public void onServerConnected(ServerConnectedEvent event) {
         Player player = event.getPlayer();
 
-        if(pendingWarpPoints.containsKey(player.getUniqueId())) {
+        if (pendingWarpPoints.containsKey(player.getUniqueId())) {
 
 
             String warpPointName = pendingWarpPoints.remove(player.getUniqueId());
@@ -96,17 +121,26 @@ public class WarpListener {
 
                 if (warpPointName != null) {
 
-                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                    out.writeUTF("ExecuteTeleport");
-                    out.writeUTF(warpPointName);
+//                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
+//                    out.writeUTF("ExecuteTeleport");
+//                    out.writeUTF(warpPointName);
+//
+//                    event.getServer().sendPluginMessage(MiniCashVelocityLibrary.WARP_CHANNEL, out.toByteArray());
+                    player.getCurrentServer().ifPresent(serverConnection -> {
 
-                    event.getServer().sendPluginMessage(MiniCashVelocityLibrary.WARP_CHANNEL, out.toByteArray());
+                        if (serverConnection.getServerInfo().equals(event.getServer().getServerInfo())) {
 
+                            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                            out.writeUTF("ExecuteTeleport");
+                            out.writeUTF(warpPointName);
+
+                            serverConnection.sendPluginMessage(MiniCashVelocityLibrary.WARP_CHANNEL, out.toByteArray());
+                        }
+                    });
                 }
 
 
-
-            }).delay(500, java.util.concurrent.TimeUnit.MILLISECONDS).schedule();
+            }).delay(750, java.util.concurrent.TimeUnit.MILLISECONDS).schedule();
 
 
         }
@@ -118,41 +152,46 @@ public class WarpListener {
     public void kicked(KickedFromServerEvent event) {
         Player player = event.getPlayer();
 
-        if(!event.kickedDuringServerConnect()){
+        if (!event.kickedDuringServerConnect()) {
             return;
         }
 
+//        player.sendMessage(
+//                Component.text("KickedFromServerEvent発生")
+//        );
 
         String warpPointName = pendingWarpPoints.remove(player.getUniqueId());
 
-        String kickReason = event.getServerKickReason()
-                .map(component -> PlainTextComponentSerializer.plainText().serialize(component))
-                .orElse("不明なエラー");
+        if (warpPointName != null) {
 
-        Component finalKickReason;
+            String kickReason = event.getServerKickReason()
+                    .map(component -> PlainTextComponentSerializer.plainText().serialize(component))
+                    .orElse("");
 
-        if (kickReason == null || kickReason.isEmpty()) {
+            Component finalKickReason;
 
-            finalKickReason = getKickReasonMessage("不明なエラーが発生しました");
+            if (kickReason == null || kickReason.isEmpty()) {
 
-        }else {
-            finalKickReason = getKickReasonMessage(kickReason);
+                finalKickReason = getKickReasonMessage("不明なエラーが発生しました");
+
+            } else {
+                finalKickReason = getKickReasonMessage(kickReason);
+            }
+
+            event.setResult(KickedFromServerEvent.Notify.create(finalKickReason));
+
         }
-
-        event.setResult(KickedFromServerEvent.Notify.create(finalKickReason));
-
 
 
     }
 
 
-
-    private Component getKickReasonMessage(String message){
+    private Component getKickReasonMessage(String message) {
 
         return Component.text("[").color(NamedTextColor.GRAY)
                 .append(Component.text("MapleWarp").color(NamedTextColor.GOLD)
-                        .append(Component.text("]",NamedTextColor.GRAY)
-                                .append(Component.text(message).color(NamedTextColor.RED)))
+                        .append(Component.text("]", NamedTextColor.GRAY)
+                                .append(Component.text("サーバー接続に失敗しました : " + message).color(NamedTextColor.RED)))
                 );
     }
 }
