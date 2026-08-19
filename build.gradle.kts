@@ -32,6 +32,12 @@ subprojects {
         options.encoding = "UTF-8"
     }
 
+    tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>(){
+
+        archiveFileName.set("MiniCashLibrary-${project.name}-${project.version}.jar")
+    }
+
+
     configure<PublishingExtension> {
         publications {
             create<MavenPublication>("maven") {
