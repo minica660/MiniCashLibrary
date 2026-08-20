@@ -63,6 +63,20 @@ public class ColorUtil implements TextProcessor {
         return PlainTextComponentSerializer.plainText().serialize(component);    }
 
     /**
+     * セクション記号（{@code §}）を含むレガシー文字列を MiniMessage 形式の文字列に変換します。
+     *
+     * @param input 変換対象のレガシー文字列（例: {@code "§aHello §cWorld"}）
+     * @return MiniMessage タグ付きの文字列。引数が null または空文字の場合は空文字 {@code ""}
+     */
+    public String sectionToMiniMessage(String input) {
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
+        Component component = SECTION_SERIALIZER.deserialize(input);
+        return MINI_MESSAGE.serialize(component);
+    }
+
+    /**
      * MiniMessage 形式のタグを含む文字列を {@link Component} に変換する用
      *
      * @param input 変換対象の文字列(例: {@code "<green>Hello <red>World"}）
