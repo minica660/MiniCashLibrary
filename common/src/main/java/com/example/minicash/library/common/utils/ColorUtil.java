@@ -1,6 +1,5 @@
 package com.example.minicash.library.common.utils;
 
-import com.example.minicash.library.common.utils.model.TextProcessor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.Component;
@@ -13,7 +12,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
  * Adventure {@link Component} との相互変換を提供します。
  * </p>
  */
-public class ColorUtil implements TextProcessor {
+public class ColorUtil {
 
     private static final LegacyComponentSerializer SECTION_SERIALIZER = LegacyComponentSerializer.legacySection();
     private static final LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
@@ -25,8 +24,7 @@ public class ColorUtil implements TextProcessor {
      * @param input 変換対象の文字列（例: {@code "§aHello §cWorld"}）
      * @return 変換された {@link Component}。引数が null または空文字の場合は {@link Component#empty()}
      */
-    @Override
-    public Component process(String input) {
+    public static Component process(String input) {
 
         if (input == null || input.isEmpty()) {
             return Component.empty();
@@ -40,8 +38,7 @@ public class ColorUtil implements TextProcessor {
      * @param component 変換対象の {@link Component}
      * @return {@code §} カラーコード付きの文字列。引数が null の場合は空文字 {@code ""}
      */
-    @Override
-    public String Restore(Component component) {
+    public static String Restore(Component component) {
         if (component == null) {
             return "";
         }
@@ -55,8 +52,7 @@ public class ColorUtil implements TextProcessor {
      * @param component 変換対象の {@link Component}
      * @return {@code §} 文字列 引数が null の場合は空文字 {@code ""}
      */
-    @Override
-    public String toPlainText(Component component) {
+    public static String toPlainText(Component component) {
         if (component == null) {
             return "";
         }
@@ -68,7 +64,7 @@ public class ColorUtil implements TextProcessor {
      * @param input 変換対象のレガシー文字列（例: {@code "§aHello §cWorld"}）
      * @return MiniMessage タグ付きの文字列。引数が null または空文字の場合は空文字 {@code ""}
      */
-    public String sectionToMiniMessage(String input) {
+    public static String sectionToMiniMessage(String input) {
         if (input == null || input.isEmpty()) {
             return "";
         }
@@ -82,8 +78,7 @@ public class ColorUtil implements TextProcessor {
      * @param input 変換対象の文字列(例: {@code "<green>Hello <red>World"}）
      * @return 変換された {@link Component}。引数が null または空文字の場合は {@link Component#empty()}
      */
-    @Override
-    public Component parseMiniMessage(String input) {
+    public static Component parseMiniMessage(String input) {
         if (input == null || input.isEmpty()) {
             return Component.empty();
         }
@@ -96,8 +91,7 @@ public class ColorUtil implements TextProcessor {
      * @param component 変換対象の {@link Component}
      * @return MiniMessageタグ付きの文字列 引数が null の場合は空文字 {@code ""}
      */
-    @Override
-    public String toMiniMessage(Component component) {
+    public static String toMiniMessage(Component component) {
         if (component == null) {
             return "";
         }
