@@ -15,8 +15,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 public class ColorUtil {
 
     private static final LegacyComponentSerializer SECTION_SERIALIZER = LegacyComponentSerializer.legacySection();
-    private static final LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     /**
      * セクション記号（{@code §}）を含む文字列を {@link Component} に変換します。
@@ -56,7 +55,8 @@ public class ColorUtil {
         if (component == null) {
             return "";
         }
-        return PlainTextComponentSerializer.plainText().serialize(component);    }
+        return PLAIN_SERIALIZER.serialize(component);
+    }
 
     /**
      * セクション記号（{@code §}）を含むレガシー文字列を MiniMessage 形式の文字列に変換します。
